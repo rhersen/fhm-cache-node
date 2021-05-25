@@ -1,0 +1,22 @@
+{
+  "name": "fhm-cache-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "date-fns": "^2.21.3",
+    "lodash": "^4.17.21",
+    "xlsx": "^0.17.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.3.0"
+  }
+}
