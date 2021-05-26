@@ -2,7 +2,7 @@ import http from "http";
 import axios from "axios";
 import xlsx from "xlsx";
 import _ from "lodash";
-import { format, isValid, parse, formatDistanceToNow } from "date-fns";
+import { addHours, differenceInHours, format, isValid, parse } from "date-fns";
 
 const port = 8080;
 let cache = {};
@@ -10,12 +10,11 @@ let cache = {};
 const server = http.createServer(async (req, res) => {
   console.log(req.method, req.url);
   if (req.url === "/") {
-    console.log(
-      "cached",
-      cache.timestamp ? formatDistanceToNow(cache.timestamp) : "no"
-    );
-
-    if (!cache.data) {
+    const ageInHours = differenceInHours(Date.now(), cache.timestamp);
+    console.log(`data is ${ageInHours} hours old`);
+    const isCacheValid = ageInHours < 24;
+    console.log(isCacheValid);
+    if (!isCacheValid) {
       const { data, status, statusText } = await axios.get(
         "https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data",
         {
@@ -24,11 +23,19 @@ const server = http.createServer(async (req, res) => {
       );
       console.log(status, statusText, data.length, "bytes");
       const book = xlsx.read(data);
+      const day = _.last(_.keys(book.Sheets));
+      const timestamp = addHours(
+        parse(day.substr(5), "d MMM yyyy", new Date()),
+        14
+      );
+      console.log("data from", day);
 
-      res.writeHead(status, { "Content-Type": "application/json" });
-      cache = { data: cases(book), timestamp: Date.now() };
+      cache = { data: cases(book), timestamp };
     }
 
+    res.writeHead(200, {
+      "Content-Type": "application/json; charset=utf-8",
+    });
     res.end(JSON.stringify(cache.data));
   } else {
     res.writeHead(404);
