@@ -4,7 +4,9 @@ import xlsx from "xlsx";
 import _ from "lodash";
 import { format, isValid, parse } from "date-fns";
 
-const requestListener = async function (req, res) {
+const port = 8080;
+
+const server = http.createServer(async (req, res) => {
   console.log(req.method, req.url);
   if (req.url === "/") {
     const { data, status, statusText } = await axios.get(
@@ -22,10 +24,10 @@ const requestListener = async function (req, res) {
     res.writeHead(404);
     res.end();
   }
-};
+});
 
-const server = http.createServer(requestListener);
-server.listen(8080);
+console.log(`listening on http://localhost:${port}`);
+server.listen(port);
 
 function cases({ Sheets }) {
   const sheet = Sheets?.["Antal per dag region"];
