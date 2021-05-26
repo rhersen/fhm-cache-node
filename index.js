@@ -13,7 +13,7 @@ const server = http.createServer(async (req, res) => {
     const ageInHours = differenceInHours(Date.now(), cache.timestamp);
     console.log(`data is ${ageInHours} hours old`);
     const isCacheValid = ageInHours < 24;
-    console.log(isCacheValid);
+    console.log(`cache is ${isCacheValid ? "valid" : "invalid"}`);
     if (!isCacheValid) {
       const { data, status, statusText } = await axios.get(
         "https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data",
@@ -58,6 +58,7 @@ function cases({ Sheets }) {
   );
 
   return {
+    heading: _.last(_.keys(Sheets)),
     columns: _.map(
       _.filter(entries, ([cell]) => /^[^A]1$/.test(cell)),
       ([, value]) => value.v
