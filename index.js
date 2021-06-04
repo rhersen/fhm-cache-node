@@ -9,7 +9,7 @@ let cache = {};
 
 const server = http.createServer(async (req, res) => {
   console.log(req.method, req.url);
-  if (req.url === "/") {
+  if (req.url === "/" || req.url === "/fohm") {
     const ageInHours = differenceInHours(Date.now(), cache.timestamp);
     console.log(`data is ${ageInHours} hours old`);
     const isCacheValid = ageInHours < 24;
