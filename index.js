@@ -25,7 +25,7 @@ const server = http.createServer(async (req, res) => {
       const book = xlsx.read(data);
       const day = _.last(_.keys(book.Sheets));
       const timestamp = addHours(
-        parse(day.substr(5), "d MMM yyyy", new Date()),
+        parse(day.substr(4).trim(), "d MMM yyyy", new Date()),
         14
       );
       console.log("data from", day);
